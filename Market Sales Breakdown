@@ -1,0 +1,15 @@
+SELECT SELL_COUNTRY_DIM_KEY, 
+
+   round(SUm (sales_amount_incl_vat_sek),0) as SUM_SALES,
+       ROUND(AVG(sales_amount_incl_vat_sek), 0) AS avg_sales_amount, 
+       ROUND(AVG(gp1_sek), 0) AS avg_gp1, 
+       ROUND(AVG(gp2_sek), 0) AS avg_gp2, 
+       CONCAT(ROUND((AVG(gp1_sek) / AVG(sales_amount_incl_vat_sek) * 100), 2), '%') AS GM1, 
+       CONCAT(ROUND((AVG(gp2_sek) / AVG(sales_amount_incl_vat_sek) * 100), 2), '%') AS GM2
+FROM DBT_DATA_VAULT.DM.AGG_SALES_FACT
+WHERE order_date_dim_key BETWEEN '2023-08-30' AND '2023-10-30' 
+AND (
+    SELL_COUNTRY_DIM_KEY IN ('SE', 'NO', 'FI', 'DK', 'IS', 'DE', 'LV', 'LT', 'EE')
+)
+GROUP BY SELL_COUNTRY_DIM_KEY
+ORDER BY SUM_SALES DESC;
